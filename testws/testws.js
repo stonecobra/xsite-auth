@@ -14,6 +14,15 @@ app.use(cookieSession({
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
 
+//Force use of HTTP, Google App Engine doesn't currently support this for nodejs
+app.use(function(req, res, next){
+  if (req.host !== 'localhost' && req.get('X-Forwarded-Proto') === 'http') {
+    res.redirect(`https://${req.host}${req.url}`)
+    return
+  }
+  next()
+})
+
 app.get('/', function (req, res){
     req.session.views = (req.session.views || 0) + 1
     
