@@ -1,3 +1,3 @@
 #!/bin/bash
 
-gcloud deploy --project koopa-testauth
+gcloud app deploy --project koopa-testauth
