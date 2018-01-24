@@ -1,0 +1,6 @@
+- Disable all HTTP
+- Deploy testpb.net
+- Deploy testws.net
+- Deploy testmg.net
+- add auth api call
+- add users for auth
