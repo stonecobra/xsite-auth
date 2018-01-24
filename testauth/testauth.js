@@ -1,5 +1,5 @@
 /*eslint-disable semi, unknown-require*/
-'use strict';
+'use strict'
 
 var cookieSession = require('cookie-session')
 var express = require('express')
@@ -33,12 +33,11 @@ var corsOptions = {
 //Force use of HTTP, Google App Engine doesn't currently support this for nodejs
 app.use(function(req, res, next){
   if (req.host !== 'localhost' && req.get('X-Forwarded-Proto') === 'http') {
-    res.redirect(`https://${req.host}${req.url}`);
-    return;
+    res.redirect(`https://${req.host}${req.url}`)
+    return
   }
-  app.router(req, res, next);
-});
-
+  next()
+})
 
 app.get('/products/:id', cors(corsOptions), function (req, res) {
     req.session.corsViews = (req.session.corsViews || 0) + 1
