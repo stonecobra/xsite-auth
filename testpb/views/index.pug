@@ -1,0 +1,76 @@
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    title testpb.net
+    link(rel='icon', href='/favicon.ico')
+    link(rel='stylesheet' href='/css/bootstrap.min.css' )
+    link(rel='stylesheet' href='/css/pure-dialog.min.css' )
+    link(rel='stylesheet' href='/css/index.css' )
+  body.anonymous
+    .d-flex.flex-column.flex-md-row.align-items-center.p-3.px-md-4.mb-3.bg-white.border-bottom.box-shadow
+      h5.my-0.mr-md-auto.font-weight-normal TestPB
+      nav.my-2.my-md-0.mr-md-3
+        a.p-2.text-dark(href='#') Favorites
+        a.p-2.text-dark(href='#') Stores
+        span#profileName.p-2.text-dark
+      a#loginBtn.btn.btn-outline-primary(href='#' onclick='loginmodal.showModal()') Login
+      a#logoutBtn.btn.btn-outline-primary(href='#' onclick='xsiteLogout()') Logout
+    h1= message
+    .container
+      #deck.card-deck.mb-3.text-center
+        .card.mb-4.box-shadow
+          .card-header
+            h4.my-0.font-weight-normal $5 Box
+          .card-body
+            h1.card-title.pricing-card-title
+              | $5 
+            ul.list-unstyled.mt-3.mb-4
+              li Item 1
+              li Item 2
+            button.btn.btn-lg.btn-block.btn-outline-primary(type='button') Add to Cart
+        .card.mb-4.box-shadow
+          .card-header
+            h4.my-0.font-weight-normal $9 Box
+          .card-body
+            h1.card-title.pricing-card-title
+              | $9
+            ul.list-unstyled.mt-3.mb-4
+              li Item 1
+              li Item 2
+            button.btn.btn-lg.btn-block.btn-outline-primary(type='button') Add to Cart
+        .card.mb-4.box-shadow
+          .card-header
+            h4.my-0.font-weight-normal $19 Box
+          .card-body
+            h1.card-title.pricing-card-title
+              | $19
+            ul.list-unstyled.mt-3.mb-4
+              li Item 1
+              li Item 2
+            button.btn.btn-lg.btn-block.btn-outline-primary(type='button') Add to Cart
+        #private-details.card.mb-4.box-shadow
+    pure-dialog#loginmodal
+      .container
+        form#loginform.form-signin
+          h2.form-signin-heading Please sign in
+          label.sr-only(for='inputEmail') Email address
+          input#inputEmail.form-control(name='username', type='text', placeholder='Username', required='', autofocus='', autocomplete='off')
+          label.sr-only(for='inputPassword') Password
+          input#inputPassword.form-control(name='password', type='password', placeholder='Password', required='', autocomplete='off')
+          .checkbox
+            label
+              input(type='checkbox', value='remember-me')
+              |  Remember me
+          button.btn.btn-lg.btn-primary.btn-block(type='submit') Sign in
+    script(src='/js/cors.js')
+    script(src='/js/document-register-element.js')
+    script(src='/js/pure-dialog.min.js')
+    script.
+      var loginform = document.getElementById('loginform');
+      loginform.addEventListener("submit", function(event) {
+        console.log('logging in user: ', loginform.elements.username.value);
+        xsiteLogin(loginform.elements.username.value, loginform.elements.password.value)
+        document.getElementById('loginmodal').close();
+        event.preventDefault();
+      });

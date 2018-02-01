@@ -1,0 +1,17 @@
+{
+  "name": "testpb",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node testpb.js"
+  },
+  "dependencies": {
+    "cookie-session": "^2.0.0-beta.3",
+    "express": "^4.16.2",
+    "morgan": "^1.9.0",
+    "pug": "^2.0.0-rc.4"
+  },
+  "devDependencies": {
+    "@google-cloud/nodejs-repo-tools": "^2.1.1"
+  }
+}
