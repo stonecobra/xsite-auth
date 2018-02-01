@@ -12,6 +12,7 @@ var users = {
 		password: 'scott123',
 		profile: {
 			name: 'Scott Sanders',
+			tag: 'initial',
 			username: 'scott'
 		}
 	},
@@ -19,6 +20,7 @@ var users = {
 		password: 'daniel123',
 		profile: {
 			name: 'Daniel Stephens',
+			tag: 'initial',
 			username: 'daniel'
 		}
 	},
@@ -26,6 +28,7 @@ var users = {
 		password: 'tim123',
 		profile: {
 			username: 'tim',
+			tag: 'initial',
 			name: 'Tim Jacobson'
 		}
 	}
@@ -77,35 +80,45 @@ app.post('/auth/login', cors(corsOptions), function (req, res) {
   	req.session = {}
     req.session.corsViews = 1
   	var username = req.body.username
+  	if (users[username] && users[username].profile) {
+  		users[username].profile.tag = new Date().toString()  		
+  	}
   	var profile = users[username].profile
   	if (profile) {
   		req.session.username = username //save the username to the session
+  		req.session.tag = profile.tag
   		return res.json(profile)
   	}
-  	return res.sendStatus(403)
+	return res.json({anonymous: true})
 })
 
 app.post('/auth/logout', cors(corsOptions), function (req, res) {
   	req.session = null
   	res.clearCookie('auth', {httpOnly: true, secure: true})
   	res.clearCookie('auth.sig', {httpOnly: true, secure: true})
-  	return res.sendStatus(200)
+  	return res.json({anonymous: true})
 })
 
 app.get('/auth/status', cors(corsOptions), function (req, res) {
-    req.session.corsViews = (req.session.corsViews || 0) + 1
+    // req.session.corsViews = (req.session.corsViews || 0) + 1
+    res.set('Vary', 'Cookie')
+    res.set('Cache-Control', 'maxage=31')
 	if (req.session) {
 		if (req.session.username) {
-			return res.json(users[req.session.username].profile)
+			var user = users[req.session.username]
+			res.set('ETag', user.tag)
+			return res.json(user.profile)
 		}
-		return res.sendStatus(403)
+		res.set('ETag', 'anonymous')
+		return res.json({anonymous: true})
 	}
-	return res.sendStatus(403)
+	res.set('ETag', 'anonymous')
+	return res.json({anonymous: true})
 })
 
 app.get('/*', function (req, res){
     req.session.views = (req.session.views || 0) + 1
-    res.send('Hello to a non-CORS page')
+    res.sendStatus(404)
 })
 
 if (module === require.main) {
