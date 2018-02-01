@@ -3,10 +3,40 @@
 
 var cookieSession = require('cookie-session')
 var express = require('express')
+var bodyParser = require('body-parser')
 var cors = require('cors')
 var morgan = require('morgan')
 
+var users = {
+	scott : {
+		password: 'scott123',
+		profile: {
+			name: 'Scott Sanders',
+			username: 'scott'
+		}
+	},
+	daniel : {
+		password: 'daniel123',
+		profile: {
+			name: 'Daniel Stephens',
+			username: 'daniel'
+		}
+	},
+	tim : {
+		password: 'tim123',
+		profile: {
+			username: 'tim',
+			name: 'Tim Jacobson'
+		}
+	}
+}
+
 var app = express()
+app.set('trust proxy', true)
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req[cookie]'))
 
 
@@ -15,6 +45,8 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :r
 app.use(cookieSession({
     name: 'auth',
     keys: ['ffff'],
+    httpOnly: true,
+    secure: true,
     maxAge: 24 * 60 * 60 * 1000 // 24 hours
   })
 )
@@ -33,22 +65,47 @@ var corsOptions = {
 
 //Force use of HTTP, Google App Engine doesn't currently support this for nodejs
 app.use(function(req, res, next){
-  if (req.host !== 'localhost' && req.get('X-Forwarded-Proto') === 'http') {
-    res.redirect(`https://${req.host}${req.url}`)
+  if (req.hostname !== 'localhost' && req.get('X-Forwarded-Proto') === 'http') {
+    res.redirect(`https://${req.hostname}${req.url}`)
     return
   }
   next()
 })
 
-app.get('/products/:id', cors(corsOptions), function (req, res) {
+app.post('/auth/login', cors(corsOptions), function (req, res) {
+	if (!req.body) return res.sendStatus(400)
+  	req.session = {}
+    req.session.corsViews = 1
+  	var username = req.body.username
+  	var profile = users[username].profile
+  	if (profile) {
+  		req.session.username = username //save the username to the session
+  		return res.json(profile)
+  	}
+  	return res.sendStatus(403)
+})
+
+app.post('/auth/logout', cors(corsOptions), function (req, res) {
+  	req.session = null
+  	res.clearCookie('auth', {httpOnly: true, secure: true})
+  	res.clearCookie('auth.sig', {httpOnly: true, secure: true})
+  	return res.sendStatus(200)
+})
+
+app.get('/auth/status', cors(corsOptions), function (req, res) {
     req.session.corsViews = (req.session.corsViews || 0) + 1
-    console.log('browser has viewed ' + req.session.corsViews + ' times')
-    res.json({msg: 'This is CORS-enabled for a whitelisted domain.'})
+	if (req.session) {
+		if (req.session.username) {
+			return res.json(users[req.session.username].profile)
+		}
+		return res.sendStatus(403)
+	}
+	return res.sendStatus(403)
 })
 
 app.get('/*', function (req, res){
     req.session.views = (req.session.views || 0) + 1
-    res.send('Hello')
+    res.send('Hello to a non-CORS page')
 })
 
 if (module === require.main) {
