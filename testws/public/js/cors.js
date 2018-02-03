@@ -22,7 +22,7 @@ function xsiteStatusCheck() {
 	  } else {
 	  	setProfile(null);
 	  }
-	 window.setTimeout(xsiteStatusCheck, 1000);
+	 window.setTimeout(xsiteStatusCheck, 5000);
 	};
 	 
 	req.onerror = function() {
@@ -31,6 +31,7 @@ function xsiteStatusCheck() {
 	};
 	
 	console.log('xsiteStatusCheck - sending CORS request');
+//	req.setRequestHeader('Pragma', '');
 	req.send();	
 }
 
@@ -70,6 +71,7 @@ function xsiteLogin (username, password) {
 	};
 	
 	console.log('xsiteLogin - sending CORS request');
+//	req.setRequestHeader('Pragma', '');
 	req.send(urlEncodedData);	
 }
 
@@ -92,6 +94,7 @@ function xsiteLogout () {
 	};
 	
 	console.log('xsiteLogout - sending CORS request');
+//	req.setRequestHeader('Pragma', '');
 	req.send();	
 }
 

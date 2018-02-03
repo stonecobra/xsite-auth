@@ -101,8 +101,8 @@ app.post('/auth/logout', cors(corsOptions), function (req, res) {
 
 app.get('/auth/status', cors(corsOptions), function (req, res) {
     // req.session.corsViews = (req.session.corsViews || 0) + 1
-    res.set('Vary', 'Cookie')
-    res.set('Cache-Control', 'maxage=31')
+    res.vary('Cookie')
+    res.set('Cache-Control', 'max-age=31')
 	if (req.session) {
 		if (req.session.username) {
 			var user = users[req.session.username]
