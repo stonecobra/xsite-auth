@@ -1,0 +1,11 @@
+{
+    "version": 2,
+    "alias": ["testauth.net", "www.testauth.net"],
+    "builds": [
+        { "src": "testauth.js", "use": "@now/node"}
+    ],
+    "public": "true",
+    "routes": [
+        { "src": "/.*", "dest": "testauth.js"}
+    ]
+}

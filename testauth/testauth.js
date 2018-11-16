@@ -54,7 +54,7 @@ app.use(cookieSession({
   })
 )
   
-var whitelist = ['https://testauth.net', 'https://testpb.net', 'https://testws.net', 'https://testmg.net']
+var whitelist = ['https://testauth.net', 'https://testpb.net', 'https://testws.net']
 var corsOptions = {
   credentials: true,
   origin: function (origin, callback) {

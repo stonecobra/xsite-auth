@@ -11,8 +11,5 @@
     "cors": "^2.8.4",
     "express": "^4.16.2",
     "morgan": "^1.9.0"
-  },
-  "devDependencies": {
-    "@google-cloud/nodejs-repo-tools": "^2.1.1"
   }
 }
